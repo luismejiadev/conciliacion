@@ -1,0 +1,89 @@
+{%load porcentaje%}
+<html>
+<head></head>
+<body>
+<form method="POST" action="/flotantes/">
+    {% csrf_token %}
+    {{form.cuentas.label}}
+    {{form.cuentas}}
+    <input type="submit" value="filtrar"/>
+</form>
+<table border=1 style="font-size:14px;">
+<thead>
+<tr>
+<th></th>
+<th>Fecha</th>
+<th>cuenta</th>
+<th>numero</th>
+<th>estado</th>
+<th>Beneficiario</th>
+<th>Descripcion</th>
+<th>Monto C$</th>
+<th>Monto US$</th>
+<th>tc</th>
+<th>Cordobizado</th>
+{%for c in cuentas%}
+    <th>
+        {{c}}        
+    </th>
+{%endfor%}
+</tr>
+<tr>
+<td colspan=3>Saldo Inicial Abril</td>
+{%for c in cuentas%}
+    <th>
+        {{c.saldo_inicial|decimal_format:c.moneda}}        
+    </th>
+{%endfor%}
+</tr>
+</thead>
+<tbody>
+
+{%regroup lineas|dictsort:"fecha" by fecha.month as lineas_mes%}
+{%for mes in lineas_mes %}
+	<tr>
+	    <td colspan=11 style="background:#0F0;">{{mes.grouper}}</td>
+	</tr>
+
+    {%regroup mes.list|dictsort:"cuenta.id" by cuenta as lineas_cuenta%}
+    {%for cuenta in lineas_cuenta %}
+    <tr>
+        <td colspan=11 style="background:#0F0;">{{cuenta.grouper}}</td>
+    </tr>	
+	{%for row in cuenta.list%}
+	<tr>
+	    <td>{{forloop.counter}}</td>
+	    <td>{{row.fecha.isoformat}}</td>
+	    <td>{{row.cuenta}}</td>
+	    <td>{{row.documento}}</td>
+	    <td>{{row.estado}}</td>
+	    <td>{{row.beneficiario}}</td>
+	    <td>{{row.descripcion}}</td>
+	    <td>{{row.montoC}}</td>
+	    <td>{{row.montoD}}</td>
+	    <td>{{row.tc}}</td>
+	    <td>{{row.monto_cordobizado}}</td>
+	    {%for c in cuentas%}	       	       
+		    <td>
+		        {%if c == row.cuenta%}
+		            {{row.flotante|decimal_format:""}}
+		        
+		        {%endif%}        
+		    </td>		    
+	   {%endfor%}
+    {%endfor%}
+    {%endfor%}    
+    <tr  style="background:#99F;">
+        <td colspan=3>Total </td>    
+        {%for c in cuentas%}
+            <td>
+                {% sum_value mes.list c 2 %}      
+            </td>
+       {%endfor%}    
+    </tr>
+{%endfor%}
+</tr>
+</tbody>
+</table>
+</body>
+</html>

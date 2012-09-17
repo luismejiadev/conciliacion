@@ -1,0 +1,9 @@
+Conciliacion
+
+en desarrollo,
+
+Permite importar los estados bancarios proporcionados por BAC y BANPRO, asi como importar los movimientos en libros , con el fin de realizar la conciliacion bancaria.
+
+En este momento la conciliacion se realiza atravez del comando conciliar.
+
+BUG: La importacion se quiebra con caracteres Unicode

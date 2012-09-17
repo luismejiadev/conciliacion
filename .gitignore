@@ -1,0 +1,7 @@
+*.pyc
+*project
+database
+*.csv
+media/
+env/
+.settings/
